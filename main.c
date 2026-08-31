@@ -1,9 +1,14 @@
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
+#include <errno.h>
 
 size_t ft_strlen(const char *s); //declare asm function
 char *ft_strcpy(char *dest, const char *src);
 int ft_strcmp(const char *s1, const char *s2);
+ssize_t ft_write(int fd, const void *buf, size_t count);
+// ssize_t ft_read(int fd, void *buf, size_t count);
+
 
 int main(void) {
 
@@ -35,5 +40,22 @@ int main(void) {
 			strcmp(pairs[i][0], pairs[i][1]),
         		pairs[i][0], pairs[i][1]);
 	}
+
+	printf("\n");
+	printf("### test for: ft_write ###");
+	const char *w_msg = "write message: please work";
+
+	errno = 0;
+	ssize_t mine = ft_write(1, w_msg, strlen(w_msg));
+	int mine_errno = errno;
+
+	errno = 0;
+	ssize_t libc = write(1, w_msg, strlen(w_msg));
+	int libc_errno = errno;
+
+	printf("return: mine=%zd libc=%zd\n", mine, libc);
+	printf("errno : mine=%d libc=%d\n", mine_errno, libc_errno);
+
 	return 0;
+
 }
