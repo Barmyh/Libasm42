@@ -3,6 +3,13 @@
 #include <unistd.h>
 #include <errno.h>
 
+#define RED     "\033[31m"
+#define GREEN   "\033[32m"
+#define BLUE    "\033[34m"
+#define YELLOW  "\033[33m"
+#define RESET   "\033[0m" 
+
+
 size_t ft_strlen(const char *s); //declare asm function
 char *ft_strcpy(char *dest, const char *src);
 int ft_strcmp(const char *s1, const char *s2);
@@ -12,11 +19,13 @@ ssize_t ft_write(int fd, const void *buf, size_t count);
 
 int main(void) {
 
-	printf("### test for: ft_strlen ###");
+	printf("### test for: ft_strlen ###\n");
 	const char *tests[] = { "", "a", "hello", "42 Luxembourg", NULL};
 
-	for (int i = 0; tests[i]; i++)
-		printf("\"%s\"  mine=%zu  libc=%zu\n", tests[i], ft_strlen(tests[i]), strlen(tests[i]));
+	for (int i = 0; tests[i]; i++) {
+		printf(GREEN "\"%s\"  mine=%zu\n" RESET, tests[i], ft_strlen(tests[i]));
+		printf(BLUE "\"%s\" libc=%zu\n" RESET, tests[i], strlen(tests[i]));
+	}
 
 	printf("\n");
 	printf("### test for: ft_strcpy ###");
@@ -40,7 +49,7 @@ int main(void) {
 			strcmp(pairs[i][0], pairs[i][1]),
         		pairs[i][0], pairs[i][1]);
 	}
-
+/*
 	printf("\n");
 	printf("### test for: ft_write ###");
 	const char *w_msg = "write message: please work";
@@ -55,7 +64,7 @@ int main(void) {
 
 	printf("return: mine=%zd libc=%zd\n", mine, libc);
 	printf("errno : mine=%d libc=%d\n", mine_errno, libc_errno);
-
+*/
 	return 0;
 
 }

@@ -9,7 +9,6 @@ CFLAGS	= -Wall -Wextra -Werror
 SRCS	= srcs/ft_strlen.s \
 	  srcs/ft_strcpy.s \
 	  srcs/ft_strcmp.s \
-	  srcs/ft_write.s
 
 OBJS	= $(SRCS:.s=.o)
 
