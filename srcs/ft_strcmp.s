@@ -2,24 +2,36 @@ section .text
 	global ft_strcmp
 
 ft_strcmp:
-	xor rcx, rcx
+	xor rax, rax
 
-.loop:
-	movzx rax, byte [rdi + rcx]
-	movzx rdx, byte [rsi + rcx]
+.loop:	
+	; al = first 8 bits of rax
+	mov al, [rdi]	; [ ] means dereference, al = *rdi
+	cmp al, [rsi]	; *rdi == *rsi (1st and 2nd args)
+	jne .diff	; if not equal jump to .diff
 
-	cmp rax, rdx
-	jne .diff
+	cmp al, 0	; checks if al == 0
+	je .done	; if equal to 0 jump to .done
 
-	cmp rax, 0
-	je .equal
-
-	inc rcx
-	jmp .loop
+	inc rdi		; rdi++
+	inc rsi		; rsi++
+	jmp .loop	; repeat
 
 .diff:
-	sub rax, rdx	; rax = s1[i] - s2[i]
+	movzx eax, byte [rdi] ; read ONE byte [rdi] into eax (8-bit with the rest 0 extended)
+	movzx ecx, byte [rsi] ; same here, this leaves a clean rax
+	sub eax, ecx	; a = a - b (rax = rax - [rsi])
+	
+.done:
 	ret
 
-.equal:
-	ret
+
+
+
+;int ft_strcmp(const char *str1, const char *str2) {
+;	int i = 0;
+;	while (str1[i] == str2[i] && str1[i] && str2[i]) {
+;		i++;
+;	}
+;	return (str1[i] - str2[i]);
+;}

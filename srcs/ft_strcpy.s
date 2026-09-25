@@ -2,14 +2,28 @@ section .text
 	global ft_strcpy
 
 ft_strcpy:
-	xor rax, rax			; rax xor rax = 0 (exclusive or, set value of rax to 0)
+	xor rax, rax
+
 .loop:
-	mov cl, byte [rsi + rax]	; assign to cl the value of the rsi(adress) + rax(idx) (same as s[i])
-	mov byte [rdi + rax], cl	; assign a byte of cl to rdi(adress) + rax(idx) (dest)
-	cmp cl, 0			; if cl == \0 goto done
+	mov dil, [rsi]
+	mov [rdi], dil	
+
+	cmp dil, 0
 	je .done
-	inc rax				; i++
-	jmp .loop			; unconditional jump (repeat .loop)
+	
+	inc rsi
+	inc rdi
+	jmp .loop
+
 .done:
-	mov rax, rdi			; assign to rax the value of rdi (dest)
+	mov rax, rdi
 	ret
+
+;char *ft_strcpy(char *dst, const char *src) {
+;	int i = 0;
+;	while (src[i])
+;		dst[i] = src[i]
+;		i++
+;	dst[i] = \0
+;	return dst;	
+;}

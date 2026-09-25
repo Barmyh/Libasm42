@@ -1,70 +1,44 @@
-#include <stdio.h>
-#include <string.h>
-#include <unistd.h>
-#include <errno.h>
+#include "libasm.h"
 
-#define RED     "\033[31m"
-#define GREEN   "\033[32m"
-#define BLUE    "\033[34m"
-#define YELLOW  "\033[33m"
-#define RESET   "\033[0m" 
-
-
-size_t ft_strlen(const char *s); //declare asm function
-char *ft_strcpy(char *dest, const char *src);
-int ft_strcmp(const char *s1, const char *s2);
-ssize_t ft_write(int fd, const void *buf, size_t count);
-// ssize_t ft_read(int fd, void *buf, size_t count);
-
+void title(char *msg) {
+	printf("\n");
+	printf(YELLOW "##### %s #####\n" RESET, msg);
+	printf("\n");
+}
 
 int main(void) {
-
-	printf("### test for: ft_strlen ###\n");
+	
+	title("Test for ft_strlen");
 	const char *tests[] = { "", "a", "hello", "42 Luxembourg", NULL};
 
 	for (int i = 0; tests[i]; i++) {
-		printf(GREEN "\"%s\"  mine=%zu\n" RESET, tests[i], ft_strlen(tests[i]));
-		printf(BLUE "\"%s\" libc=%zu\n" RESET, tests[i], strlen(tests[i]));
+		printf("Test: \"%s\"\n", tests[i]);
+		printf(GREEN "mine = %zu" RESET, ft_strlen(tests[i]));
+		printf("\t| ");
+		printf(BLUE "libc = %zu" RESET, strlen(tests[i]));
+		printf("\n\n");
 	}
 
-	printf("\n");
-	printf("### test for: ft_strcpy ###");
-	char dest_mine[100];
-	char dest_libc[100];
 
-	for (int i = 0; tests[i]; i++)
-	{
-		ft_strcpy(dest_mine, tests[i]);
-		strcpy(dest_libc, tests[i]);
-		printf("\"%s\"  mine=\"%s\"  libc=\"%s\"\n", tests[i], dest_mine, dest_libc);
+	title("Test for ft_strcmp");
+	const char *str1[] = {"abc", "abc", "ab"};
+	const char *str2[] = {"abc", "ab", "abc"};
+
+	for (int i = 0; i < 3; i++) {
+		printf("Test: str1: \"%s\" str2: \"%s\"\n", str1[i], str2[i]);
+		printf(GREEN "mine = %d" RESET, ft_strcmp(str1[i], str2[i]));
+		printf("\t| ");
+		printf(BLUE "libc = %d" RESET, strcmp(str1[i], str2[i]));
+		printf("\n\n");
 	}
 
-	printf("\n");
-	printf("### test for: ft_strcmp ###");
-	const char *pairs[][2] = {{"hello", "hello"}, {"abc", "abd"}, {"abc", "abc "}, {"", ""}, {"42", "24"}};
+	title("Test for ft_strcpy");
+	const char src[] = "Hello world";
+	char dst[100]; 
+	printf("Test: \"%s\"\n", src);
+	printf("%s\n", strcpy(dst, src));
+	printf("%s", ft_strcpy(dst, src));
 
-	for (int i = 0; i < 5; i++) {
-		printf("mine=%-4d libc=%-4d  (\"%s\" vs \"%s\")\n",
-			ft_strcmp(pairs[i][0], pairs[i][1]),
-			strcmp(pairs[i][0], pairs[i][1]),
-        		pairs[i][0], pairs[i][1]);
-	}
-/*
-	printf("\n");
-	printf("### test for: ft_write ###");
-	const char *w_msg = "write message: please work";
-
-	errno = 0;
-	ssize_t mine = ft_write(1, w_msg, strlen(w_msg));
-	int mine_errno = errno;
-
-	errno = 0;
-	ssize_t libc = write(1, w_msg, strlen(w_msg));
-	int libc_errno = errno;
-
-	printf("return: mine=%zd libc=%zd\n", mine, libc);
-	printf("errno : mine=%d libc=%d\n", mine_errno, libc_errno);
-*/
 	return 0;
 
 }
