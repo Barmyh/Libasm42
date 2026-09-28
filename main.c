@@ -33,11 +33,13 @@ int main(void) {
 	}
 
 	title("Test for ft_strcpy");
-	const char src[] = "Hello world";
+	const char src[] = "Hello World!";
 	char dst[100]; 
 	printf("Test: \"%s\"\n", src);
-	printf("%s\n", strcpy(dst, src));
-	printf("%s", ft_strcpy(dst, src));
+	printf(GREEN "mine = %s" RESET, ft_strcpy(dst, src));
+	printf("\t| ");
+	printf(BLUE "libc = %s\n" RESET, strcpy(dst, src));
+	printf("\n\n");
 
 	return 0;
 
