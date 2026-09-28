@@ -17,7 +17,7 @@ int main(void) {
 		printf("\t| ");
 		printf(BLUE "libc = %zu" RESET, strlen(tests[i]));
 		printf("\n\n");
-	}
+	}	
 
 
 	title("Test for ft_strcmp");
@@ -41,6 +41,25 @@ int main(void) {
 	printf(BLUE "libc = %s\n" RESET, strcpy(dst, src));
 	printf("\n\n");
 
+
+	title("Test for ft_write");
+	const char write_msg[] = "Hello World, ft_write version!\n";
+
+	printf("Testing successful write:\n");
+	int ret = write(1, write_msg, strlen(write_msg));
+	int ft_ret = ft_write(1, write_msg, strlen(write_msg));
+	printf(GREEN "ft_write return value: %d" RESET, ft_ret);
+	printf("\t| ");
+	printf(BLUE "write return value: %d" RESET, ret);
+	printf("\n\n");
+
+	printf("Testing invalid write:\n");
+	ret = write(-1, write_msg, strlen(write_msg));
+	ft_ret = ft_write(-1, write_msg, strlen(write_msg));
+	printf(GREEN "ft_write return value: %d" RESET, ft_ret);
+	printf("\t| ");
+	printf(BLUE "write return value: %d" RESET, ret);
+	printf("\n\n");
 	return 0;
 
 }
