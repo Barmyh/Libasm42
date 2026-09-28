@@ -42,23 +42,29 @@ int main(void) {
 	printf("\n\n");
 
 
-	title("Test for ft_write");
+	title("Test for ft_write & and ft_read");
 	const char write_msg[] = "Hello World, ft_write version!\n";
+	char read_buf[100];
 
-	printf("Testing successful write:\n");
+	printf("Testing successful write/read:\n");
 	int ret = write(1, write_msg, strlen(write_msg));
 	int ft_ret = ft_write(1, write_msg, strlen(write_msg));
-	printf(GREEN "ft_write return value: %d" RESET, ft_ret);
+	printf("Input two strings to test the read function!\n");
+	int ft_rret = ft_read(0, read_buf, sizeof(read_buf) - 1);
+	int rret = read(0, read_buf, sizeof(read_buf) - 1);
+	printf(GREEN "ft_write return value: [ft_write: %d, errno: %d] | [ft_read: %d, errno: %d]" RESET, ft_ret, errno, ft_rret, errno);
 	printf("\t| ");
-	printf(BLUE "write return value: %d" RESET, ret);
+	printf(BLUE "write return value: [write: %d, errno: %d] | [read: %d, errno: %d]" RESET, ret, rret);
 	printf("\n\n");
 
-	printf("Testing invalid write:\n");
+	printf("Testing invalid write/read:\n");
 	ret = write(-1, write_msg, strlen(write_msg));
 	ft_ret = ft_write(-1, write_msg, strlen(write_msg));
-	printf(GREEN "ft_write return value: %d" RESET, ft_ret);
+	rret = read(-1, read_buf, sizeof(read_buf));
+	ft_rret = ft_read(-1, read_buf, sizeof(read_buf));
+	printf(GREEN "ft_write return value: [ft_write: %d, errno: %d] | [ft_read: %d, errno: %d]" RESET, ft_ret, errno, ft_rret, errno);
 	printf("\t| ");
-	printf(BLUE "write return value: %d" RESET, ret);
+	printf(BLUE "write return value: [write: %d, errno: %d] | [read: %d, errno: %d]" RESET, ret, errno, rret, errno);
 	printf("\n\n");
 	return 0;
 

@@ -1,4 +1,4 @@
-extern errno_location
+extern __errno_location
 extern malloc
 extern ft_strlen
 extern ft_strcpy
@@ -8,28 +8,37 @@ global ft_strdup
 
 ft_strdup:
 	push rdi
-
-calc_len:
 	call ft_strlen
-	mov rcx, rax
-	inc rcx
-
-malloc_dest:
-	mov rdi, rcx
+	inc rax
+	mov rdi, rax
 	call malloc
-	cmp rax, 0
-	je error
 
-cpy_str:
+	test rax, rax
+	jz .error
+
 	mov rdi, rax
 	pop rsi
-	call ft_strcpy
+
+.copy:
+	mov dl, [rsi]
+	mov [rdi], dl
+
+	inc rsi
+	inc rdi
+
+	test dl, dl
+	jnz .copy
+	jmp .done
+
+.done:
 	ret
 
-error:
+.error:
 	pop rdi
-	call errno_location
-	mov rdx, 12
-	mov [rax], rdx
-	mov rax, 0
+	xor rax, rax
 	ret
+
+
+; char *strdup(const char *s)
+; on success, returns a pointer to the duplicated string
+; null if insufficient mem, with errno
