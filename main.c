@@ -1,25 +1,50 @@
 #include "libasm.h"
 
 void title(char *msg) {
-	printf("\n");
-	printf(YELLOW "##### %s #####\n" RESET, msg);
-	printf("\n");
+	int extention = 10;
+	printf("\n\n");
+	printf(YELLOW "%s\n" RESET, msg);
+	for (int i = 0; i < strlen(msg) + extention; i++) {
+		printf(YELLOW "─" RESET);
+	}
+	printf("\n\n");
 }
 
+
+void create_file(const char *test) {
+        int fd = open("test.txt", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+        if (fd == -1) {
+                perror("open error");
+                return;
+        }
+        write(fd, test, strlen(test));
+        close(fd);
+
+}
+
+
 int main(void) {
-	
+
+	// ft_strlen
 	title("Test for ft_strlen");
-	const char *tests[] = { "", "a", "hello", "42 Luxembourg", NULL};
+	const char *tests[] = {
+		"",
+		"a", 
+		"hello",
+		"42 Luxembourg",
+		"a very long and boring string to test and with as you please!",
+		NULL};
 
 	for (int i = 0; tests[i]; i++) {
 		printf("Test: \"%s\"\n", tests[i]);
 		printf(GREEN "mine = %zu" RESET, ft_strlen(tests[i]));
-		printf("\t| ");
+		printf("\n");
 		printf(BLUE "libc = %zu" RESET, strlen(tests[i]));
 		printf("\n\n");
 	}	
 
 
+	// ft_strcmp
 	title("Test for ft_strcmp");
 	const char *str1[] = {"abc", "abc", "ab"};
 	const char *str2[] = {"abc", "ab", "abc"};
@@ -27,45 +52,109 @@ int main(void) {
 	for (int i = 0; i < 3; i++) {
 		printf("Test: str1: \"%s\" str2: \"%s\"\n", str1[i], str2[i]);
 		printf(GREEN "mine = %d" RESET, ft_strcmp(str1[i], str2[i]));
-		printf("\t| ");
+		printf("\n");
 		printf(BLUE "libc = %d" RESET, strcmp(str1[i], str2[i]));
 		printf("\n\n");
 	}
 
+
+	// ft_strcpy
 	title("Test for ft_strcpy");
-	const char src[] = "Hello World!";
-	char dst[100]; 
-	printf("Test: \"%s\"\n", src);
-	printf(GREEN "mine = %s" RESET, ft_strcpy(dst, src));
-	printf("\t| ");
-	printf(BLUE "libc = %s\n" RESET, strcpy(dst, src));
-	printf("\n\n");
+	char dst_mine[100];
+	char dst_libc[100];
+	for (int i = 0; tests[i]; i++) {
+		printf("Test: \"%s\"\n", tests[i]);
+		printf(GREEN "mine = %s" RESET, ft_strcpy(dst_mine, tests[i]));
+		printf("\n");
+		printf(BLUE "libc = %s\n" RESET, strcpy(dst_libc, tests[i]));
+		printf("\n\n");
+	}
 
 
-	title("Test for ft_write & and ft_read");
-	const char write_msg[] = "Hello World, ft_write version!\n";
-	char read_buf[100];
+	// ft_write
+	title("Test for ft_write");
+	for (int i = 0; tests[i]; i++) {
 
-	printf("Testing successful write/read:\n");
-	int ret = write(1, write_msg, strlen(write_msg));
-	int ft_ret = ft_write(1, write_msg, strlen(write_msg));
-	printf("Input two strings to test the read function!\n");
-	int ft_rret = ft_read(0, read_buf, sizeof(read_buf) - 1);
-	int rret = read(0, read_buf, sizeof(read_buf) - 1);
-	printf(GREEN "ft_write return value: [ft_write: %d, errno: %d] | [ft_read: %d, errno: %d]" RESET, ft_ret, errno, ft_rret, errno);
-	printf("\t| ");
-	printf(BLUE "write return value: [write: %d, errno: %d] | [read: %d, errno: %d]" RESET, ret, rret);
-	printf("\n\n");
+		printf("Test: \"%s\"\n", tests[i]);
+		printf(GREEN);
+		fflush(stdout);
+		ssize_t mine = ft_write(1, tests[i], strlen(tests[i]));
+		printf(" | mine = [%zd]\n", mine);
+		printf(RESET);
+		fflush(stdout);
 
-	printf("Testing invalid write/read:\n");
-	ret = write(-1, write_msg, strlen(write_msg));
-	ft_ret = ft_write(-1, write_msg, strlen(write_msg));
-	rret = read(-1, read_buf, sizeof(read_buf));
-	ft_rret = ft_read(-1, read_buf, sizeof(read_buf));
-	printf(GREEN "ft_write return value: [ft_write: %d, errno: %d] | [ft_read: %d, errno: %d]" RESET, ft_ret, errno, ft_rret, errno);
-	printf("\t| ");
-	printf(BLUE "write return value: [write: %d, errno: %d] | [read: %d, errno: %d]" RESET, ret, errno, rret, errno);
-	printf("\n\n");
+		printf(BLUE);
+		fflush(stdout);
+		ssize_t libc = write(1, tests[i], strlen(tests[i]));
+		printf(" | libc = [%zd]\n", libc);
+		printf(RESET);
+		fflush(stdout);
+		printf("\n");
+
+	}
+
+
+	// ft_read
+	title("Test for ft_read");
+	for (int i = 0; tests[i]; i++) {
+		create_file(tests[i]);
+		int fd_mine = open("test.txt", O_RDONLY);
+		char mine_buf[1024] = {0};
+
+		printf("Test: \"%s\"\n", tests[i]);
+		printf(GREEN);
+		ssize_t mine = ft_read(fd_mine, mine_buf, strlen(tests[i]));
+		printf(" | mine = [%zd] \"%s\"\n", mine, mine_buf);
+		printf(RESET);
+
+		int fd_libc = open("test.txt", O_RDONLY);
+		char libc_buf[1024] = {0};
+
+		printf(BLUE);
+		ssize_t libc = read(fd_libc, libc_buf, strlen(tests[i]));
+                printf(" | libc = [%zd] \"%s\"\n", libc, libc_buf);
+		printf(RESET);
+		printf("\n");
+	
+	// ft_calloc
+	title("Test for ft_calloc");
+
+	for (int i = 0; i < 5; i++) {
+	    size_t nmemb[] = {1, 5, 10, 42, 100};
+	    size_t size[]  = {1, 1, 4, 1, 8};
+
+	    size_t total = nmemb[i] * size[i];
+
+	    unsigned char *mine = ft_calloc(nmemb[i], size[i]);
+	    unsigned char *libc = calloc(nmemb[i], size[i]);
+
+	    printf("Test: nmemb = %zu, size = %zu\n",
+	        nmemb[i], size[i]);
+
+	    if (mine == NULL || libc == NULL) {
+	        printf("Allocation failed\n");
+	        free(mine);
+	        free(libc);
+	        continue;
+	    }
+
+	    int mine_zero = 1;
+	    int libc_zero = 1;
+	    int same = 1;
+	    for (size_t j = 0; j < total; j++) {
+	      	 if (mine[j] != 0)
+	      	     mine_zero = 0;
+	      	 if (libc[j] != 0)
+	      	     libc_zero = 0;
+	      	 if (mine[j] != libc[j])
+	       	    same = 0;
+	    }
+	    printf(" | mine zeroed = %s\n", mine_zero ? "OK" : "FAIL");
+	    printf(" | libc zeroed = %s\n", libc_zero ? "OK" : "FAIL");
+	    printf(" | same content = %s\n", same ? "OK" : "FAIL");
+	    free(mine);
+	    free(libc);
+	}
+ 	}	
 	return 0;
-
 }

@@ -7,35 +7,27 @@ section .text
 global ft_strdup
 
 ft_strdup:
-	push rdi
-	call ft_strlen
-	inc rax
-	mov rdi, rax
+	push rdi		; save og str pointer
+	call ft_strlen		; rax = strlen(src)
+
+	inc rax			; include \0
+	mov rdi, rax		; malloc(size)
 	call malloc
 
 	test rax, rax
 	jz .error
 
-	mov rdi, rax
-	pop rsi
-
-.copy:
-	mov dl, [rsi]
-	mov [rdi], dl
-
-	inc rsi
-	inc rdi
-
-	test dl, dl
-	jnz .copy
+	mov rdi, rax		; dest = allocated mem
+	pop rsi			; src = og str
+	call ft_strcpy
 	jmp .done
 
 .done:
 	ret
 
 .error:
-	pop rdi
-	xor rax, rax
+	pop rdi			; restore stack
+	xor rax, rax		; ret NULL
 	ret
 
 
