@@ -16,7 +16,7 @@ SRCS	= srcs/ft_strlen.s \
 
 OBJS	= $(SRCS:.s=.o)
 
-all: $(NAME)
+all: $(NAME) test
 
 $(NAME): $(OBJS)
 	ar rcs $(NAME) $(OBJS)
@@ -25,13 +25,13 @@ $(NAME): $(OBJS)
 	$(AS) $(ASFLAGS) $< -o $@
 
 test: $(NAME)
-	$(CC) $(CCFLAGS) main.c $(NAME) -o test
+	$(CC) $(CFLAGS) main.c $(NAME) -o test
 
 clean:
 	rm -f $(OBJS)
 
 fclean: clean
-	rm -f $(OBJS)
+	rm -f $(OBJS) $(NAME) test
 
 re: fclean all
 

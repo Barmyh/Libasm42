@@ -4,7 +4,7 @@ void title(char *msg) {
 	int extention = 10;
 	printf("\n\n");
 	printf(YELLOW "%s\n" RESET, msg);
-	for (int i = 0; i < strlen(msg) + extention; i++) {
+	for (size_t i = 0; i < strlen(msg) + extention; i++) {
 		printf(YELLOW "─" RESET);
 	}
 	printf("\n\n");
@@ -115,46 +115,31 @@ int main(void) {
                 printf(" | libc = [%zd] \"%s\"\n", libc, libc_buf);
 		printf(RESET);
 		printf("\n");
+	}
 	
 	// ft_calloc
 	title("Test for ft_calloc");
+	size_t sizes[] = {0, 1, 5, 10, 42, 100, 1000};
+	size_t array_len = sizeof(sizes) / sizeof(sizes[0]); // (56 bytes / 8 bytes = 7)
+	
+	for (size_t i = 0; i < array_len; i++) {
 
-	for (int i = 0; i < 5; i++) {
-	    size_t nmemb[] = {1, 5, 10, 42, 100};
-	    size_t size[]  = {1, 1, 4, 1, 8};
+		void *mine = ft_calloc(sizes[i], sizeof(int));
+		void *libc = calloc(sizes[i], sizeof(int));
+		printf("Test for size: %zu\n", sizes[i]);
 
-	    size_t total = nmemb[i] * size[i];
+		if (mine == NULL && libc == NULL)
+			printf("size: %zu: both NULL\n", sizes[i]);
+		else if (mine == NULL || libc == NULL)
+			printf("size: %zu: different\n", sizes[i]);
+		else if (memcmp(mine, libc, sizes[i] * sizeof(int)) == 0)
+			printf(GREEN "OK\n" RESET);
+		else
+			printf(RED "KO\n" RESET);
+		printf("\n");
+		free(mine);
+		free(libc);
+	}	
 
-	    unsigned char *mine = ft_calloc(nmemb[i], size[i]);
-	    unsigned char *libc = calloc(nmemb[i], size[i]);
-
-	    printf("Test: nmemb = %zu, size = %zu\n",
-	        nmemb[i], size[i]);
-
-	    if (mine == NULL || libc == NULL) {
-	        printf("Allocation failed\n");
-	        free(mine);
-	        free(libc);
-	        continue;
-	    }
-
-	    int mine_zero = 1;
-	    int libc_zero = 1;
-	    int same = 1;
-	    for (size_t j = 0; j < total; j++) {
-	      	 if (mine[j] != 0)
-	      	     mine_zero = 0;
-	      	 if (libc[j] != 0)
-	      	     libc_zero = 0;
-	      	 if (mine[j] != libc[j])
-	       	    same = 0;
-	    }
-	    printf(" | mine zeroed = %s\n", mine_zero ? "OK" : "FAIL");
-	    printf(" | libc zeroed = %s\n", libc_zero ? "OK" : "FAIL");
-	    printf(" | same content = %s\n", same ? "OK" : "FAIL");
-	    free(mine);
-	    free(libc);
-	}
- 	}	
 	return 0;
 }
